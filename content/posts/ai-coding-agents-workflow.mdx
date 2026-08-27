@@ -1,0 +1,36 @@
+---
+title: "How I use a two-agent coding workflow"
+excerpt: "I use a stronger agent to plan and a cheaper agent to code. The important part is that the coding agent must report what it sees and push back when it spots a problem."
+date: "2026-07-09"
+tags: ["AI", "Agents", "Workflow", "LLM"]
+readTime: 3
+---
+
+I use two AI models when I code to keep costs down without losing careful planning. A stronger model acts as the senior: it takes my goal, breaks it into small tasks, and reviews the output. A cheaper model acts as the junior: it opens the files, writes the code, and runs tests.
+
+The problem with this setup is how AI assistants handle uncertainty. Left on their own, they like to state guesses as facts. An assistant once claimed a frontend UI was “verified” just by looking at the static source asset instead of the browser. Another called a feature “fully working” when a core step had never actually executed. They state hope in the same confident tone as real verification.
+
+To stop that, I gave the junior model a required report format. It still has to complete the assigned task, but it is forced to declare its assumptions and tag anything not backed by verbatim terminal output as UNVERIFIED.
+
+## How the side channel works
+
+```text
+ME ──► SENIOR (plans & reviews) ──► JUNIOR (writes code & runs tests)
+          │                            │
+          └── reads reports & ledger ◄─┘ (appends DISAGREE / ASSUMPTIONS)
+```
+
+The junior model writes all the code while the senior model writes none. The key difference from standard “architect/editor” setups is that disagreements and unverified claims are captured in the same generation stream as the code patch:
+
+- **Assumptions are declared, not hidden.** If the model has to guess to keep moving, it states the guess explicitly rather than baking it into the code silently.
+- **Strict verification.** Claims must include verbatim command output or be tagged UNVERIFIED. Looking at a file is not “testing” it.
+- **Non-blocking execution.** The junior never stops to ask for permission on small decisions. It finishes the patch and logs its notes.
+- **Persistent ledger on disk.** Objections are appended to a simple markdown ledger (`ledger.md`) so open questions don’t get forgotten across stateless API calls.
+
+## Why I prefer this over multi-agent councils
+
+Multi-agent debate setups usually run several models in a loop before any code is written. That costs extra tokens and latency on every decision.
+
+This workflow keeps the overhead low. The side-channel report rides inside the coding call that was already happening, so the cost stays close to a normal two-model session. It works well for a solo developer who wants some structure without the weight of a full multi-agent system.
+
+It is yet not meant to scale to large teams or complex long-running projects. It is a lightweight way for one person to keep assumptions visible while still moving quickly.

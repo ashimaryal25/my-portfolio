@@ -1,0 +1,23 @@
+const config = {
+  name: "Ashim Aryal",
+  tagline: "Software developer interested in systems, web development, and engineering.",
+  bio: "I'm a software developer and student building full-stack web applications, systems tools, and hardware integrations.",
+  email: "ashimaryal519@gmail.com",
+  github: "https://github.com/ashimaryal25",
+  linkedin: "https://www.linkedin.com/in/ashimaryal25/",
+  twitter: "https://twitter.com/ashim",
+  location: "Earth",
+  nav: [
+    { label: "Projects", href: "/projects" },
+    { label: "Blog", href: "/blog" },
+    { label: "About", href: "/about" },
+  ],
+  skills: {
+    Languages: ["Python", "JavaScript", "C", "SQL", "Bash"],
+    Frameworks: ["Next.js", "React", "Flask", "Node.js"],
+    Tools: ["SQLite", "Git", "Linux", "Raspberry Pi", "Docker"],
+    Interests: ["Local-first software", "Privacy engineering", "Hardware hacking", "ML systems"],
+  },
+};
+
+export default config;

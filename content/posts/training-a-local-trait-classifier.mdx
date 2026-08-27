@@ -1,0 +1,119 @@
+---
+title: "Trait Classifier Training Notes"
+excerpt: "How I trained a small local text classifier for ICLBooth so the booth can assign trading-card stats without needing an internet connection."
+date: "2026-07-04"
+tags: ["ML", "Python", "NLP", "ICLBooth"]
+readTime: 6
+---
+
+When the booth runs offline without an OpenAI API key, it still needs to turn whatever a guest types into three personality stats for their trading card.
+
+I didn't need a model to guess one absolute truth about someone from a twelve-word sentence. I just needed three traits that make sense and feel fun on a printed card.
+
+## The Model
+
+- **Features:** TF-IDF word and character n-grams
+- **Classifier:** LinearSVC (scikit-learn)
+- **Labels:** 25 traits
+- **Saved model:** `ml/models/trait_classifier.joblib`
+
+## Why top-3 accuracy matters
+
+A sentence someone types at an event usually fits several traits at once:
+
+> *"I like building quick prototypes and helping people understand how they work."*
+
+That could easily be **Builder**, **Technical**, **Communicator**, or **Supportive**. Scoring the model on whether it picked the *exact single CSV label* made reasonable guesses look like failures. What actually matters for the card is whether good traits land in the top 3.
+
+## How the dataset evolved
+
+### 1. Small single-label dataset
+Early versions struggled because the evaluation was too rigid:
+
+```text
+Input: "I like making rough ideas real."
+CSV label: Builder
+Model guess: Creative
+Result: Marked as wrong, even though "Creative" is a totally fair match.
+```
+
+### 2. Testing with fewer traits
+I temporarily dropped the label count to 8 just to make sure TF-IDF + LinearSVC was actually learning useful signals:
+
+```text
+Input: "I like coding, debugging, and figuring out how systems work."
+Prediction: Technical
+```
+
+It worked, but 8 traits wasn't enough variety for a photo booth.
+
+### 3. Full 25-trait dataset
+I expanded the dataset to 100 examples across all 25 traits. The model had much better range, but strict top-1 accuracy hovered around 54% because of overlapping labels.
+
+### 4. Switching to top-3 scoring
+Since the card prints three traits anyway, I changed the benchmark to check if the target trait landed anywhere in the top 3 predictions. Strict top-3 accuracy immediately climbed to **76%**.
+
+### 5. Multi-label evaluation
+Even strict top-3 was still checking against one "correct" answer in the spreadsheet. I made a new evaluation set that allows multiple valid traits per sentence:
+
+```csv
+text,acceptable_traits
+"I like making rough ideas real.",Builder|Creative|Innovative
+```
+
+If any of the top 3 predictions matches an acceptable trait, it counts. Acceptable top-3 accuracy reached **82%**.
+
+### 6. Fixing confused pairs
+Instead of blindly generating more data, I looked at what the model was mixing up and added targeted examples for easily confused pairs (like *Communicator* vs *Mentor*, or *Bold* vs *Energetic*). That brought acceptable top-3 accuracy to **90%**.
+
+### 7. Identity phrases ("I am an art major...")
+Testing with real student phrasing revealed a blind spot: the model understood actions ("I paint pictures") better than simple identity statements ("I'm an art major"). 
+
+```text
+Input: "IM A CS MAJOR AND I DO ALOT PROJECTS"
+Before: Curious, Energetic, Creative
+After:  Builder, Technical, Problem Solver
+
+Input: "I LIKE TO DO ARTS AND IM A ART MAJOR AND REALLY INVOLVED IN THE COMMUNITY"
+Before: Curious, Energetic, Strategic
+After:  Collaborative, Creative, Communicator
+```
+
+Adding a small slice of identity-style training examples brought acceptable top-3 accuracy to **91%**.
+
+## Final numbers
+
+- **Training accuracy:** 92%
+- **Strict top-1 accuracy:** 54%
+- **Strict top-3 accuracy:** 76%
+- **Acceptable top-3 accuracy:** **91%**
+
+## How the scores work on the card
+
+The model outputs distance-to-margin scores converted into 1–100 stat bars on the card:
+
+```text
+Input: "I stay calm when deadlines get close and fix problems at the last minute."
+
+Output:
+- Clutch: 88
+- Problem Solver: 79
+- Organized: 68
+```
+
+Because the user mentioned fixing things at the last minute, the model gave them a high Clutch score and a noticeably lower Organized score.
+
+## Safety and edge cases
+
+This is a card generator, not a moderation model. Because every label is positive, harmful or hostile text still gets forced into a positive trait:
+
+```text
+Input: "I AM A BAD PERSON AND I LIKE TO HURT PEOPLE"
+Output: Researcher, Creative, Supportive (trying to fit the only labels it knows)
+```
+
+To prevent garbage on printed cards, a lightweight safety check (local Detoxify model + regex) runs before the classifier. If someone types something inappropriate, the booth simply asks them to rephrase before anything is scored or sent to the printer.
+
+## Where it stands
+
+It works well enough as an offline backup when there's no internet at an event. To make it any better, I'll need to see how it handles real sentences from people using the booth instead of making up test examples on my laptop.

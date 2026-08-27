@@ -1,0 +1,86 @@
+.section {
+  padding: 56px 0 80px;
+}
+
+.header {
+  margin-bottom: 28px;
+}
+
+.title {
+  font-size: 1.6rem;
+  font-weight: 600;
+}
+
+.bio {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 640px;
+  font-size: 0.98rem;
+  color: var(--text-muted);
+  line-height: 1.75;
+  margin-bottom: 40px;
+}
+
+.sectionBlock {
+  margin-top: 36px;
+  padding-top: 28px;
+  border-top: 1px solid var(--border);
+  max-width: 640px;
+}
+
+.subhead {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin-bottom: 14px;
+}
+
+.skillsGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 0.9rem;
+}
+
+.skillItem {
+  display: flex;
+  gap: 8px;
+  line-height: 1.5;
+}
+
+.skillCat {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  width: 110px;
+  flex-shrink: 0;
+}
+
+.skillList {
+  color: var(--text);
+}
+
+.contactText {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+
+.link {
+  color: var(--text);
+  text-decoration: underline;
+  text-decoration-color: var(--border-hover);
+  text-underline-offset: 3px;
+  transition: all var(--transition);
+}
+
+.link:hover {
+  text-decoration-color: var(--text);
+}
+
+@media (max-width: 640px) {
+  .skillItem {
+    flex-direction: column;
+    gap: 2px;
+  }
+}

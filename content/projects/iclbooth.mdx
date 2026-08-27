@@ -1,0 +1,61 @@
+---
+title: "ICLBooth"
+tagline: "A full-screen photo-booth kiosk for Gettysburg College: customizable photo strips, AI-powered trading-card stats, and an unattended multi-display setup on one machine."
+date: "2026"
+status: "Completed"
+tech: ["Next.js", "React", "TypeScript", "OpenAI API", "MediaPipe", "SQLite"]
+github: "https://github.com/ashimaryal25/ICLBooth"
+featured: true
+order: 3
+---
+
+ICLBooth is a photo-booth kiosk I built for the college's Innovation & Creativity Lab. It's a single full-screen app that runs unattended all day and gives students and visitors two photo experiences: classic custom photo strips, or personalized trading cards with AI-generated stats and abilities based on a short self-description. Everything happens on one Windows machine, and finished cards and strips print straight to a photo printer without ever opening a browser print dialog.
+
+![The ICLBooth kiosk walking a user through making a trading card and photo strips](/projects/iclbooth.gif)
+
+## The experiences
+
+![The ICLBooth home screen offering the trading card, photo strip, and arcade game](/projects/iclbooth/booth-home.png)
+*The home screen. A user picks a mode, and the booth returns here after a stretch of inactivity.*
+
+**Trading card.** You take a countdown portrait in front of the camera, type your name and a sentence about yourself, and the booth turns that into a Gettysburg-themed trading card: a title, three traits with scores, a rarity, a "Known For" line, and a special ability. The card text and stats come from the OpenAI Responses API, forced through a strict Zod schema so invalid responses are caught before rendering. If the API is unavailable or the response fails validation, it falls back to a local generator so the booth keeps working. The browser composites your photo with the generated stats and renders the final card to a PNG.
+
+**Photo collage.** A classic photo-strip experience: two-, three-, or four-photo layouts, automatic countdowns, sequential capture, custom filters, frame colors, and draggable emoji stickers. The finished strip is composed onto a branded canvas and laid out as a calibrated 4×6 double strip ready for the printer's physical center cut.
+
+**Arcade game.** A quick mini-game on the home screen that uses the same camera feed for hand tracking.
+
+## How it all connects
+
+The physical booth separates user interaction from camera preview across multiple displays: a **touchscreen** for user input, a dedicated **mirror monitor** showing the live camera feed and countdowns, a surrounding wall of **retro CRT TVs** running Raspberry Pi media loops, and an instruction display.
+
+![The booth's retro CRT wall powered on, showing campus imagery, the camera feed, and the Card Generator slide](/projects/iclbooth/booth-setup.jpg)
+*The physical booth: a wall of CRTs running Raspberry Pi presentations, the camera-feed screen near the top, the DNP photo printer in the middle, and the instruction screen to the right.*
+
+```text
+user taps  ─►  TOUCHSCREEN (controls, the flow)
+                    │  "run countdown, capture photo"
+                    ▼
+               MIRROR MONITOR (live camera feed & pose preview)
+                    │  photo returned
+                    ▼
+               touchscreen continues to card/strip rendering & print
+```
+
+Both screens are pages of the same Next.js app communicating in real time over `BroadcastChannel` (with an in-memory relay fallback). When someone taps "take photo", the touchscreen instructs the mirror monitor to handle the countdown and capture the high-res frame. The arcade game reads from that same camera feed, so multiple features never fight over the single webcam.
+
+## Making a kiosk behave unattended
+
+The fun demo hides where the effort went. Most of it was in the boring problem of a machine that has to run all day with nobody minding it.
+
+- **Silent printing.** Kiosks can't pop a print dialog, so printing is handled by a PowerShell bridge (`print-card.ps1`) that sends the PNG to the Windows default printer as a calibrated 4×6 job. A companion script watches printer media status so it can flag when paper or ribbon is low.
+- **Printer calibration.** The physical DNP printer’s center cut required careful calibration. I adjusted the composition offsets in `composePlainPrintSheet` so the final 2×6 strips print with clean, symmetric borders across both cut halves.
+- **Staying local.** Finished card and strip PNGs along with metadata are stored on the booth in SQLite, capped to the newest 100 so storage doesn't grow without bound. Only the self-description is ever sent to OpenAI; photos and final canvas compositions stay entirely on the machine.
+
+## Stack & Credits
+
+Next.js 16 (App Router), React 19, and TypeScript, with Tailwind for styling. OpenAI Responses API with structured JSON output and Zod validation for card identities, SQLite via `better-sqlite3` for metadata, `html-to-image` for card export, HTML Canvas for the collage, and PowerShell for the Windows print path.
+
+- **Design & UI Artwork:** Chloe Bretous
+- **Arcade Game (Ghost Runner):** Raiyat Haque
+
+Setup, kiosk configuration, and operational notes are in the **[GitHub repository](https://github.com/ashimaryal25/ICLBooth)**.

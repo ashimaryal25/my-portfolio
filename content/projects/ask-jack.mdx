@@ -1,0 +1,62 @@
+---
+title: "Jack"
+tagline: "A makerspace assistant grounded in the lab's equipment manuals and setup guides."
+date: "2026"
+status: "Completed"
+tech: ["Node.js", "OpenAI", "RAG", "pgvector", "Supabase", "Server-Sent Events"]
+github: "https://github.com/ashimaryal25/ask-jack"
+featured: false
+order: 5
+---
+
+Students learning to use makerspace tools often get stuck on small setup questions when lab staff are busy helping someone else. Generic AI chatbots often give advice for the wrong printer model or misstate temperatures and slicer settings, which can cause failed prints or damage equipment.
+
+I built Jack to answer questions strictly from our lab's own manuals and setup guides. When an answer isn't documented, Jack lets the student know and suggests asking a lab monitor rather than making a guess. The project is named after Clarence B. "Jack" Rogers Jr., the alumnus whose donation helped establish the lab.
+
+## Workspaces for the lab and specific machines
+
+![Jack's home screen, with workspaces for the general lab, the 3D printer, and the embroidery machine](/projects/ask-jack/demo-1-home.png)
+
+Jack organizes knowledge into three workspaces: the **General Lab** (which has access to the full knowledge base across the makerspace: policies, safety, 3D printing, and embroidery) and dedicated workspaces for the **Ender 3 V3 KE** and the **Janome Memory Craft 550E**. Selecting a specific machine narrows the suggestions and retrieval to that equipment.
+
+## Step-by-step guidance
+
+![A vague question gets a clarifying reply and a choice of guidance style](/projects/ask-jack/demo-2-guide.png)
+
+New users often start with broad questions like *"How do I 3D print?"* Instead of dumping a wall of text, Jack asks what they are trying to make and offers two options: seeing the full guide all at once, or walking through it step-by-step.
+
+![A step-by-step answer with an embedded how-to video](/projects/ask-jack/demo-3-steps.png)
+
+In step-by-step mode, the assistant presents one instruction at a time and waits for the student to confirm before moving to the next step, so they can work at their own pace at the physical machine.
+
+## Machine-specific focus
+
+![The embroidery workspace, answering a hooping question for the lab's Janome machine](/projects/ask-jack/demo-4-embroidery.png)
+
+While the General Lab workspace answers questions across the whole makerspace, switching to a dedicated machine workspace focuses the suggestions and context specifically on that hardware. For example, asking about fabric hooping inside the embroidery workspace pulls the exact tensioning and stabilizer steps written for the lab's Janome machine, ensuring answers stay tied to procedures verified for our equipment.
+
+## Visual guides and video embedding
+
+![An answer that pulls in the manual's exploded hooping diagram](/projects/ask-jack/demo-5-diagram.png)
+
+Physical tasks like bed leveling or hooping fabric are often much easier to understand with a quick visual than with text alone. Jack pulls diagrams and short demonstration clips directly into the response.
+
+To keep the pipeline simple, media links are stored directly in the Markdown documentation as structured markers:
+
+```text
+[VIDEO: <url> | How to download a 3D model]
+```
+
+These markers are embedded and retrieved alongside the text chunks. When the model outputs the answer, the client detects completed markers and renders the inline video player or diagram image.
+
+## How it works
+
+- **Knowledge base:** Equipment manuals written in Markdown, chunked into ~2000-character sections, embedded with `text-embedding-3-small`, and stored in Supabase Postgres with `pgvector`.
+- **Retrieval & response:** Similarity search retrieves the most relevant documentation chunks, which are passed to GPT-4o-mini to generate a grounded answer streamed via Server-Sent Events (SSE).
+- **Backend & frontend:** A lightweight Node.js HTTP service with a vanilla JavaScript frontend hosted on Railway, featuring voice input, PDF export, conversation history, and rate limiting.
+
+## Current coverage
+
+Jack currently covers the Ender 3 V3 KE 3D printers and the Janome embroidery machine.
+
+Source code: **[GitHub Repository](https://github.com/ashimaryal25/ask-jack)**.

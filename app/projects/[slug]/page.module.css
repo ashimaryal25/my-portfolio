@@ -1,0 +1,75 @@
+.article {
+  padding: 48px 0 80px;
+}
+
+.topNav {
+  margin-bottom: 24px;
+}
+
+.backLink {
+  font-size: 0.84rem;
+  font-family: var(--font-mono);
+  color: var(--text-dim);
+  transition: color var(--transition);
+}
+
+.backLink:hover {
+  color: var(--text);
+}
+
+.header {
+  margin-bottom: 24px;
+}
+
+.title {
+  font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+  line-height: 1.25;
+  letter-spacing: -0.025em;
+  margin-bottom: 10px;
+  color: #ffffff;
+}
+
+.tagline {
+  font-size: 1.05rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.metaRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.tech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.links {
+  display: flex;
+  gap: 14px;
+}
+
+.link {
+  font-size: 0.84rem;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  text-decoration: underline;
+  text-decoration-color: var(--border-hover);
+  text-underline-offset: 3px;
+  transition: color var(--transition);
+}
+
+.link:hover {
+  color: var(--text);
+  text-decoration-color: var(--text);
+}
+
+.content {
+  margin-top: 32px;
+}

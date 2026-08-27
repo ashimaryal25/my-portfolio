@@ -1,0 +1,51 @@
+---
+title: "Tic-Tac-Toe Mural"
+tagline: "You draw an X on the wall with a marker. A wall plotter sees it, thinks, and draws the O."
+date: "2026"
+status: "Completed"
+tech: ["Python", "OpenCV", "ESP32", "Minimax", "Computer Vision"]
+github: "https://github.com/ashimaryal25/tic-tac-toe-mural"
+featured: true
+order: 4
+---
+
+You draw an X on the wall with a marker. A wall plotter sees it, thinks, and draws the O.
+
+The plotter draws a grid on the wall. You grab a marker, draw an X in one of the squares, and step back. A camera clipped above the board waits until your hand leaves the camera view, works out which square you used, and the plotter slides across, drops its pen into an empty square, and draws an O. Then it moves back out of the way so you can go again.
+
+That's the whole thing: tic-tac-toe against a machine that plays with a real pen on a real wall.
+
+![The wall plotter drawing an O after a human move](/projects/tic-tac-toe-mural.gif)
+
+## What one turn looks like
+
+You're always X and you always go first. The plotter is always O. That keeps it a normal game, and it also gives the vision code something to lean on, since a new mark should only ever be a human X.
+
+Once you've drawn:
+
+1. The camera waits until your hand leaves the camera view.
+2. It grabs a handful of frames instead of betting everything on one photo.
+3. It locates the grid even when the camera is off to one side, then warps that into a clean square.
+4. It looks for a single new X sitting in a square the engine still thinks is empty.
+5. Minimax works out the reply.
+6. My laptop pushes a short command batch to the ESP32 and reads the file back before letting it run.
+7. The gondola drives over, draws the O, and returns to its parking spot.
+8. The camera double-checks that an O really landed in that square before your next turn opens up.
+
+It never touches your X. You draw the messy human mark and it answers with its own, just a lot slower.
+
+## The parts that gave me trouble
+
+The wall plotter I started from is built to draw one thing. You calibrate it, upload a single picture, let it draw, and restart the ESP32. A game isn't one picture though. It's a grid, then an O, then another O, and maybe a line through three of them at the end, and each one is its own batch, with a person standing in front of the wall the whole time in between.
+
+So most of my firmware work was turning that into something that stays running. It had to survive a finished drawing without rebooting, park itself cleanly, report boot and run IDs so I could tell when it had reset, and refuse a bad upload.
+
+The camera was the harder half. In a real game the board is never clean: hands pass through the frame, glare shows up as marks that aren't there, and a quickly drawn X doesn't look much like a tidy one. To keep it from making things up, a detection only counts when several frames agree, and any square the engine already has as an O is left alone.
+
+I also stopped trusting the firmware when it said it was done, since "done" doesn't guarantee the ink is on the wall. The camera checks the square it asked for before play continues. If the ESP resets in the middle of a draw, the game assumes it no longer knows where the gondola is rather than guessing.
+
+## Where it stands
+
+The full loop works. The next step is making it reliable enough to run unattended at an exhibition.
+
+Setup, flags, and calibration live in the **[GitHub repository](https://github.com/ashimaryal25/tic-tac-toe-mural)**.

@@ -1,0 +1,659 @@
+.consoleWrapper {
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  overflow: hidden;
+  font-family: var(--font-sans);
+}
+
+.titlebar {
+  background: var(--surface);
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+  gap: 12px;
+}
+
+.tabs {
+  display: flex;
+  gap: 4px;
+}
+
+.tabBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: var(--r-sm);
+  font-size: 0.76rem;
+  font-family: var(--font-mono);
+  color: var(--text-dim);
+  background: transparent;
+  transition: all var(--transition);
+}
+
+.tabBtn:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.activeTab {
+  color: var(--text) !important;
+  background: var(--bg-subtle) !important;
+  box-shadow: inset 0 -1px 0 var(--accent);
+  font-weight: 600;
+}
+
+.screen {
+  padding: 18px;
+  background: var(--bg);
+  min-height: 250px;
+}
+
+/* ── TAB 1: Farm View ── */
+.farmView {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.farmHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+}
+
+.farmStats {
+  display: flex;
+  gap: 14px;
+}
+
+.farmStats strong {
+  color: var(--text);
+}
+
+.dispatchBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: var(--r-sm);
+  font-size: 0.75rem;
+  font-family: var(--font-mono);
+  background: #2563eb;
+  color: #ffffff;
+  font-weight: 600;
+  transition: background var(--transition);
+}
+
+.dispatchBtn:hover {
+  background: #1d4ed8;
+}
+
+.printerGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+}
+
+.printerCard {
+  background: #12141c;
+  border: 1px solid #232734;
+  border-radius: var(--r-sm);
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.printerRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.printerName {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.badge {
+  font-size: 0.65rem;
+  font-family: var(--font-mono);
+  padding: 2px 5px;
+  border-radius: 3px;
+  font-weight: 600;
+}
+
+.badge_printing {
+  background: rgba(56, 189, 248, 0.12);
+  color: #38bdf8;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+}
+
+.badge_idle {
+  background: rgba(148, 163, 184, 0.1);
+  color: #94a3b8;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.badge_needs_clearing {
+  background: rgba(251, 191, 36, 0.12);
+  color: #fbbf24;
+  border: 1px solid rgba(251, 191, 36, 0.3);
+}
+
+.printerFile {
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.printerFile code {
+  color: var(--text-muted);
+}
+
+.progressContainer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.progressBar {
+  flex: 1;
+  height: 4px;
+  background: #1e2230;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: #38bdf8;
+}
+
+.progressText {
+  font-size: 0.68rem;
+  font-family: var(--font-mono);
+  color: #38bdf8;
+}
+
+.printerFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.68rem;
+  font-family: var(--font-mono);
+  color: var(--text-dim);
+  margin-top: 2px;
+}
+
+.clearBedBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.65rem;
+  font-family: var(--font-mono);
+  background: #fbbf24;
+  color: #0c0d0e;
+  font-weight: 600;
+}
+
+.clearBedBtn:hover {
+  background: #f59e0b;
+}
+
+.consoleLog {
+  background: #06070a;
+  border: 1px solid #1c1f2a;
+  border-radius: var(--r-sm);
+  padding: 6px 10px;
+  font-size: 0.74rem;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+}
+
+.logPrompt {
+  color: #34d399;
+}
+
+/* ── TAB 2: Agent View ── */
+.agentView {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.scenarioSelector {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.label {
+  font-size: 0.75rem;
+  font-family: var(--font-mono);
+  color: var(--text-dim);
+}
+
+.scenarioBtn {
+  padding: 3px 8px;
+  font-size: 0.72rem;
+  font-family: var(--font-mono);
+  border-radius: var(--r-sm);
+  background: #141720;
+  border: 1px solid #232734;
+  color: var(--text-muted);
+}
+
+.activeScenario {
+  background: #1f2433;
+  border-color: #38bdf8;
+  color: #ffffff;
+}
+
+.agentTranscript {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.agentBoxSenior, .agentBoxJunior {
+  padding: 12px 14px;
+  border-radius: var(--r-sm);
+  border: 1px solid #232734;
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.agentBoxSenior {
+  background: #10121a;
+  border-left: 3px solid #818cf8;
+}
+
+.agentBoxJunior {
+  background: #12141c;
+  border-left: 3px solid #38bdf8;
+}
+
+.agentHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.agentRole {
+  font-size: 0.7rem;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: #818cf8;
+}
+
+.agentRoleJunior {
+  font-size: 0.7rem;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: #38bdf8;
+}
+
+.modelTag {
+  font-size: 0.65rem;
+  font-family: var(--font-mono);
+  color: var(--text-dim);
+}
+
+.agentPrompt {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+}
+
+.dissentAlert {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #fbbf24;
+  font-size: 0.75rem;
+  font-family: var(--font-mono);
+  margin-bottom: 4px;
+}
+
+.dissentText {
+  color: var(--text);
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.dissentText code {
+  color: #38bdf8;
+}
+
+.outcomeBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 8px;
+  font-size: 0.72rem;
+  font-family: var(--font-mono);
+  color: #34d399;
+  background: rgba(52, 211, 153, 0.1);
+  padding: 3px 6px;
+  border-radius: var(--r-sm);
+}
+
+/* ── TAB 3: Plotter Tic-Tac-Toe ── */
+.plotterView {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.plotterIntro {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.plotterIntro strong { color: #f8fafc; }
+
+.resetGameBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 8px;
+  background: #141720;
+  border: 1px solid #303646;
+  border-radius: var(--r-sm);
+  color: var(--text-muted);
+  font: 0.72rem var(--font-mono);
+}
+
+.resetGameBtn:hover { color: #fff; border-color: #64748b; }
+
+.plotterStage {
+  position: relative;
+  aspect-ratio: 1.18;
+  min-height: 0;
+  overflow: auto;
+  border: 1px solid #232734;
+  background: #d8d5ce;
+}
+
+.plotterWorkspace {
+  display: grid;
+  grid-template-columns: minmax(200px, 1fr) minmax(150px, 0.52fr);
+  border: 1px solid #232734;
+}
+
+.plotterSvg { display: block; width: 100%; height: 100%; min-width: 480px; }
+.svgCell { cursor: crosshair; }
+.svgCell:hover rect { fill: rgba(245, 158, 11, 0.15); }
+.humanPenTool { cursor: grab; }
+.humanPenTool:active { cursor: grabbing; }
+.gondolaSvg { transition: none; }
+
+.drawingCircle {
+  stroke-dasharray: 214;
+  stroke-dashoffset: 214;
+  animation: drawCircle 0.8s linear forwards;
+}
+
+.drawingX {
+  stroke-dasharray: 80;
+  stroke-dashoffset: 80;
+  animation: drawX 0.28s linear forwards;
+}
+
+@keyframes drawCircle {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes drawX {
+  to { stroke-dashoffset: 0; }
+}
+
+
+.plotterDetails {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px;
+  background: #101218;
+}
+
+.plotterDetails div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font: 0.73rem var(--font-mono);
+}
+
+.plotterDetails span { color: var(--text-dim); }
+.plotterDetails strong, .plotterDetails code { color: var(--text-muted); font: inherit; }
+
+/* ── TAB 3: ML View ── */
+.mlView {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.mlHeader {
+  font-size: 0.78rem;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+}
+
+.mlInputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mlInputWrapper {
+  display: flex;
+  gap: 8px;
+}
+
+.mlInput {
+  flex: 1;
+  background: #12141c;
+  border: 1px solid #232734;
+  border-radius: var(--r-sm);
+  padding: 8px 12px;
+  color: var(--text);
+  font-size: 0.84rem;
+  font-family: var(--font-sans);
+  outline: none;
+}
+
+.mlInput:focus {
+  border-color: #38bdf8;
+}
+
+.predictBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: var(--r-sm);
+  background: #38bdf8;
+  color: #0c0d0e;
+  font-size: 0.78rem;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  transition: all var(--transition);
+}
+
+.predictBtn:hover:not(:disabled) {
+  background: #7dd3fc;
+}
+
+.predictBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.presets {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.74rem;
+}
+
+.presetLabel {
+  font-family: var(--font-mono);
+  color: var(--text-dim);
+}
+
+.presetBtn {
+  padding: 2px 8px;
+  border-radius: 3px;
+  background: #141720;
+  border: 1px solid #232734;
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-family: var(--font-mono);
+  transition: all var(--transition);
+}
+
+.presetBtn:hover {
+  background: #1e2230;
+  color: #ffffff;
+}
+
+.activePreset {
+  background: #1f2433 !important;
+  border-color: #38bdf8 !important;
+  color: #ffffff !important;
+}
+
+.mlOutputBox {
+  background: #12141c;
+  border: 1px solid #232734;
+  border-radius: var(--r-sm);
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  animation: fadeIn 0.2s ease;
+}
+
+.mlPendingBox {
+  background: #12141c;
+  border: 1px dashed #232734;
+  border-radius: var(--r-sm);
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 0.8rem;
+  font-family: var(--font-mono);
+  color: #38bdf8;
+}
+
+.mlEmptyPrompt {
+  background: #0d0f17;
+  border: 1px dashed #1c202d;
+  border-radius: var(--r-sm);
+  padding: 16px;
+  text-align: center;
+  font-size: 0.78rem;
+  font-family: var(--font-mono);
+  color: var(--text-dim);
+}
+
+.mlEmptyPrompt strong {
+  color: var(--text-muted);
+}
+
+.outputTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.outputTitle {
+  font-size: 0.76rem;
+  font-family: var(--font-mono);
+  color: var(--text-dim);
+  text-transform: uppercase;
+}
+
+.confidenceBadge {
+  font-size: 0.72rem;
+  font-family: var(--font-mono);
+  color: #34d399;
+}
+
+.traitsList {
+  display: flex;
+  gap: 10px;
+}
+
+.traitCard {
+  flex: 1;
+  background: #191c28;
+  border: 1px solid #282f42;
+  border-radius: var(--r-sm);
+  padding: 8px 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.traitRank {
+  font-size: 0.7rem;
+  font-family: var(--font-mono);
+  color: #38bdf8;
+  font-weight: 700;
+}
+
+.traitName {
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 640px) {
+  .tabs {
+    flex-wrap: wrap;
+  }
+  .farmStats {
+    flex-direction: column;
+    gap: 4px;
+  }
+  .traitsList {
+    flex-direction: column;
+  }
+  .plotterWorkspace { grid-template-columns: 1fr; }
+  .plotterDetails { display: grid; grid-template-columns: 1fr 1fr; }
+}
