@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { getAllProjects } from "@/lib/projects";
 import { getAllPosts } from "@/lib/posts";
 import config from "@/data/config";
@@ -23,7 +24,7 @@ export default function HomePage() {
       {/* ── INTRO / BIO ── */}
       <section className={styles.intro}>
         <div className={styles.introTop}>
-          <div>
+          <div className={styles.introCopy}>
             <h1 className={styles.name}>{config.name}</h1>
             <p className={styles.bio}>
               I build things that live half in software and half in the physical world. Lately that&apos;s meant
@@ -44,6 +45,16 @@ export default function HomePage() {
               </a>
             </div>
           </div>
+          <figure className={styles.cardPortrait}>
+            <Image
+              src="/ashim-aryal-card.png"
+              alt="Ashim Aryal trading card made with CardifyBooth"
+              width={600}
+              height={960}
+              priority
+            />
+            <figcaption>Made with CardifyBooth.</figcaption>
+          </figure>
         </div>
 
         {/* ── Interactive Systems Console ── */}

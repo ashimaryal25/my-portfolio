@@ -7,8 +7,34 @@
 
 .introTop {
   display: flex;
-  flex-direction: column;
-  gap: 16px;
+  align-items: start;
+  justify-content: space-between;
+  gap: 48px;
+}
+
+.introCopy {
+  max-width: 620px;
+  padding-top: 8px;
+}
+
+.cardPortrait {
+  width: 180px;
+  flex: 0 0 180px;
+}
+
+.cardPortrait img {
+  width: 100%;
+  height: auto;
+  border-radius: 6px;
+  border: 1px solid rgba(215, 162, 54, 0.45);
+}
+
+.cardPortrait figcaption {
+  margin-top: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--text-dim);
+  text-align: center;
 }
 
 .name {
@@ -178,6 +204,14 @@
 }
 
 @media (max-width: 640px) {
+  .introTop {
+    flex-direction: column;
+    gap: 24px;
+  }
+  .cardPortrait {
+    width: 160px;
+    flex-basis: 160px;
+  }
   .projectGrid {
     grid-template-columns: 1fr;
   }
