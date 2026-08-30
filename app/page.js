@@ -46,13 +46,13 @@ export default function HomePage() {
 
           <figure className={styles.cardPortrait}>
             <Image
-              src="/ashim-card-v14.png"
+              src="/ashim-aryal-card.png"
               alt="Ashim Aryal trading card made with CardifyBooth"
               width={600}
               height={960}
               priority
             />
-            <figcaption>Made with CardifyBooth.</figcaption>
+            <figcaption>Made using ICLBooth&apos;s Cardify feature.</figcaption>
           </figure>
         </div>
 
@@ -73,7 +73,7 @@ export default function HomePage() {
           </Link>
         </div>
 
-        <div className={styles.grid}>
+        <div className={styles.projectGrid}>
           {projects.map((p) => (
             <ProjectCard key={p.slug} project={p} />
           ))}

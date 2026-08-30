@@ -185,12 +185,35 @@
   color: var(--accent-hover);
 }
 
+.postMeta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.76rem;
+  font-family: var(--font-mono);
+  color: var(--text-dim);
+}
+
 .postDate {
   font-size: 0.76rem;
   font-family: var(--font-mono);
   color: var(--text-dim);
   white-space: nowrap;
-  flex-shrink: 0;
+}
+
+.postReadTime {
+  font-size: 0.76rem;
+  font-family: var(--font-mono);
+  color: var(--text-dim);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.postReadTime::before {
+  content: "·";
+  color: var(--text-dim);
+  font-weight: bold;
 }
 
 .postExcerpt {
