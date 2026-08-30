@@ -27,9 +27,7 @@ export default function HomePage() {
           <div className={styles.introCopy}>
             <h1 className={styles.name}>{config.name}</h1>
             <p className={styles.bio}>
-              I build things that live half in software and half in the physical world. Lately that&apos;s meant
-              wiring up a farm of 3D printers so they take jobs over the network, a robot that draws on walls
-              with a pen, and small ML models that run on the booth computer instead of someone&apos;s cloud.
+              Software developer and student at Gettysburg College. I build full-stack web applications, backend tools, and networked systems with Next.js, Node, and Python.
             </p>
             <div className={styles.contactLinks}>
               <a href={config.github} target="_blank" rel="noopener noreferrer">
@@ -45,9 +43,10 @@ export default function HomePage() {
               </a>
             </div>
           </div>
+
           <figure className={styles.cardPortrait}>
             <Image
-              src="/ashim-aryal-card.png"
+              src="/ashim-card-v14.png"
               alt="Ashim Aryal trading card made with CardifyBooth"
               width={600}
               height={960}
@@ -70,11 +69,11 @@ export default function HomePage() {
         <div className={styles.sectionHeader}>
           <h2>Systems & Projects</h2>
           <Link href="/projects" className={styles.viewAll}>
-            all projects ({projects.length}) →
+            All ({projects.length}) →
           </Link>
         </div>
 
-        <div className={styles.projectGrid}>
+        <div className={styles.grid}>
           {projects.map((p) => (
             <ProjectCard key={p.slug} project={p} />
           ))}
@@ -83,23 +82,26 @@ export default function HomePage() {
 
       <hr className="divider" />
 
-      {/* ── WRITING ── */}
+      {/* ── WRITING / LOGS ── */}
       <section className={styles.section}>
         <div className={styles.sectionHeader}>
           <h2>Writing</h2>
           <Link href="/blog" className={styles.viewAll}>
-            all essays ({posts.length}) →
+            All ({posts.length}) →
           </Link>
         </div>
 
         <div className={styles.postList}>
-          {posts.map((p) => (
-            <Link key={p.slug} href={`/blog/${p.slug}`} className={styles.postItem}>
-              <div className={styles.postHeader}>
-                <span className={styles.postTitle}>{p.title}</span>
-                <time className={styles.postDate}>{formatDate(p.date)}</time>
+          {posts.map((post) => (
+            <Link key={post.slug} href={`/blog/${post.slug}`} className={styles.postItem}>
+              <div className={styles.postMeta}>
+                <span className={styles.postDate}>{formatDate(post.date)}</span>
+                <span className={styles.postReadTime}>{post.readTime} min read</span>
               </div>
-              {p.excerpt && <p className={styles.postExcerpt}>{p.excerpt}</p>}
+              <div className={styles.postMain}>
+                <h3 className={styles.postTitle}>{post.title}</h3>
+                <p className={styles.postExcerpt}>{post.excerpt}</p>
+              </div>
             </Link>
           ))}
         </div>

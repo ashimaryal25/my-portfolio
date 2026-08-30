@@ -5,6 +5,7 @@ date: "2026"
 status: "Completed"
 tech: ["Python", "OpenCV", "ESP32", "Minimax", "Computer Vision"]
 github: "https://github.com/ashimaryal25/tic-tac-toe-mural"
+image: "/projects/tic-tac-toe-mural.gif"
 featured: true
 order: 4
 ---
@@ -27,10 +28,10 @@ Once you've drawn:
 2. It grabs a handful of frames instead of betting everything on one photo.
 3. It locates the grid even when the camera is off to one side, then warps that into a clean square.
 4. It looks for a single new X sitting in a square the engine still thinks is empty.
-5. Minimax works out the reply.
-6. My laptop pushes a short command batch to the ESP32 and reads the file back before letting it run.
-7. The gondola drives over, draws the O, and returns to its parking spot.
-8. The camera double-checks that an O really landed in that square before your next turn opens up.
+5. Minimax calculates the best move.
+6. The controller sends the drawing command batch to the ESP32.
+7. The gondola drives over, drops the pen, draws the O, and returns to park.
+8. The camera verifies that the O was drawn before opening up your next turn.
 
 It never touches your X. You draw the messy human mark and it answers with its own, just a lot slower.
 
@@ -42,7 +43,7 @@ So most of my firmware work was turning that into something that stays running. 
 
 The camera was the harder half. In a real game the board is never clean: hands pass through the frame, glare shows up as marks that aren't there, and a quickly drawn X doesn't look much like a tidy one. To keep it from making things up, a detection only counts when several frames agree, and any square the engine already has as an O is left alone.
 
-I also stopped trusting the firmware when it said it was done, since "done" doesn't guarantee the ink is on the wall. The camera checks the square it asked for before play continues. If the ESP resets in the middle of a draw, the game assumes it no longer knows where the gondola is rather than guessing.
+I also stopped trusting the firmware when it said it was done, since "done" doesn't guarantee the ink is physically on the wall. The vision loop visually verifies that the new O appeared on the board before allowing the next turn to start. If the ESP resets mid-draw, the system pauses instead of guessing where the pen is.
 
 ## Where it stands
 

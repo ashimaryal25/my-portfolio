@@ -1,12 +1,12 @@
 const config = {
   name: "Ashim Aryal",
-  tagline: "Software developer interested in systems, web development, and engineering.",
-  bio: "I'm a software developer and student building full-stack web applications, systems tools, and hardware integrations.",
+  tagline: "Software developer and student at Gettysburg College.",
+  bio: "Software developer and student at Gettysburg College building full-stack web applications, backend tools, and networked systems with Next.js, Node, and Python.",
   email: "ashimaryal519@gmail.com",
   github: "https://github.com/ashimaryal25",
   linkedin: "https://www.linkedin.com/in/ashimaryal25/",
   twitter: "https://twitter.com/ashim",
-  location: "Earth",
+  location: "Gettysburg, PA",
   nav: [
     { label: "Projects", href: "/projects" },
     { label: "Blog", href: "/blog" },

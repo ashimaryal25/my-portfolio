@@ -1,40 +1,35 @@
 ---
 title: "KeyForge"
-tagline: "Turns a typed name into a finished 3D-printed keychain with almost no manual work."
+tagline: "Type a name. A stock printer starts a keychain. No slicing, no USB stick, no babysitting."
 date: "2026"
 status: "Completed"
-tech: ["Node.js", "OpenSCAD", "PrusaSlicer", "Reverse-engineered protocol", "3D Printing", "Zero dependencies"]
+tech: ["Node.js", "OpenSCAD", "PrusaSlicer", "Reverse-engineered protocol", "3D Printing"]
 github: "https://github.com/ashimaryal25/KeyForge"
+image: "/projects/keyforge.gif"
 featured: true
 order: 2
 ---
 
-KeyForge turns a typed name into a finished 3D-printed keychain with almost no manual work. Someone types a name, and the system builds the model, checks it, slices it, finds a free printer, uploads the job, and starts the print. It is designed for events where many people may want a keychain and there is no time to prepare every file by hand.
-
-The full pipeline is:
+Someone types a name. KeyForge builds the model, checks that it is one solid piece, slices it, finds a free Ender 3 on the local network, and starts the print. The person at the kiosk never touches OpenSCAD, a slicer, or an SD card.
 
 ```text
-text name → OpenSCAD model → geometry check → STL → PrusaSlicer → G-code → queue → printer
+name → OpenSCAD → geometry check → STL → PrusaSlicer → G-code → queue → printer
 ```
 
-![KeyForge creating, assigning, and starting a print](/projects/keyforge.gif)
+![KeyForge generating a keychain from a typed name and dispatching it to a stock printer](/projects/keyforge.gif)
 
-It runs on the same stock Ender 3 V3 KE printers as [PrintFarm](/projects/printfarm) and uses their local network connection. No firmware changes, no Raspberry Pi, and no USB shuffling are required. The application itself uses only Node’s built-in APIs and has zero runtime npm packages. OpenSCAD and PrusaSlicer are the only external tools needed.
+## Name to a printable solid
 
-## From name to model
+Short names and long names need different letter spacing. The OpenSCAD template sits the letters on four connecting rails with a ring hole and raised text, so the keychain comes off the bed as one piece. Before slicing, a geometry check rejects anything that is not a single connected solid. Valid models get a custom PrusaSlicer profile for the Ender 3 V3 KE.
 
-Short and long names need different spacing. KeyForge places the letters into an OpenSCAD template with four connecting rails, a ring hole, and raised text so the finished keychain prints as one solid piece. Before slicing, it checks that the geometry is a single connected solid. Invalid shapes are flagged instead of becoming failed prints. Valid models are sliced with a custom PrusaSlicer profile for the Ender 3 V3 KE, and the dashboard shows a preview before the job is sent.
+## Then it has to find a printer that is actually free
 
-## Queue and printer control
+Jobs sit in a persistent queue: waiting, printing, failed, or recently finished. Auto-dispatch only picks a printer that is online, idle, and has a confirmed empty bed. It uploads the G-code over HTTP, sends start over the printer's WebSocket on port 9999, and waits until telemetry shows that exact file as active. A "start acknowledged" packet is not enough — real printers lie.
 
-Jobs live in a persistent queue with clear states: waiting, printing, failed, or recently finished. KeyForge scans the local network for printers and reads their live status. It does not store IP addresses because the printers use DHCP and addresses can change after a restart.
+Printer IPs change under DHCP, so KeyForge never stores them. After a restart it rediscovers machines and only reattaches a job when both the printer identity and the remote filename match.
 
-Jobs can be assigned to a specific printer or picked up automatically. Auto-dispatch only chooses a printer that is online, free, and has a confirmed empty bed. It uploads the G-code over HTTP, sends the start command over the printer’s WebSocket on port 9999, and waits until telemetry reports that exact file as active. When a print finishes, the printer stays locked until someone confirms the bed is clear.
+The printer-control half of this became [PrintFarm](/projects/printfarm). KeyForge is the kiosk in front of it: name in, keychain out.
 
-The queue and history survive server restarts. Failed jobs can be retried, downloaded for inspection, or deleted.
+Tested on stock **Ender 3 V3 KE** printers. No firmware changes, no Raspberry Pi, no cloud account.
 
-## Current status
-
-The full flow works on stock Ender 3 V3 KE printers: a name goes in, the model is generated and validated, the job is sent to a free printer, and the system tracks it until completion. Other Creality models may use different network paths or status fields, so support is currently confirmed only on the Ender 3 V3 KE.
-
-Source code and setup instructions: **[GitHub Repository](https://github.com/ashimaryal25/KeyForge)**.
+Source and setup: **[GitHub](https://github.com/ashimaryal25/KeyForge)**.

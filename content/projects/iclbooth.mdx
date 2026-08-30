@@ -5,6 +5,7 @@ date: "2026"
 status: "Completed"
 tech: ["Next.js", "React", "TypeScript", "OpenAI API", "MediaPipe", "SQLite"]
 github: "https://github.com/ashimaryal25/ICLBooth"
+image: "/projects/iclbooth/booth-setup.jpg"
 featured: true
 order: 3
 ---
@@ -43,13 +44,13 @@ user taps  ─►  TOUCHSCREEN (controls, the flow)
 
 Both screens are pages of the same Next.js app communicating in real time over `BroadcastChannel` (with an in-memory relay fallback). When someone taps "take photo", the touchscreen instructs the mirror monitor to handle the countdown and capture the high-res frame. The arcade game reads from that same camera feed, so multiple features never fight over the single webcam.
 
-## Making a kiosk behave unattended
+## Printing & physical cutter calibration
 
-The fun demo hides where the effort went. Most of it was in the boring problem of a machine that has to run all day with nobody minding it.
+Getting a browser app to output clean physical prints to a dye-sub photo printer had a few hardware quirks:
 
-- **Silent printing.** Kiosks can't pop a print dialog, so printing is handled by a PowerShell bridge (`print-card.ps1`) that sends the PNG to the Windows default printer as a calibrated 4×6 job. A companion script watches printer media status so it can flag when paper or ribbon is low.
-- **Printer calibration.** The physical DNP printer’s center cut required careful calibration. I adjusted the composition offsets in `composePlainPrintSheet` so the final 2×6 strips print with clean, symmetric borders across both cut halves.
-- **Staying local.** Finished card and strip PNGs along with metadata are stored on the booth in SQLite, capped to the newest 100 so storage doesn't grow without bound. Only the self-description is ever sent to OpenAI; photos and final canvas compositions stay entirely on the machine.
+- **Calibrating the physical 2×6 center cut:** The DNP DS-RX1 prints a 4×6 sheet and physically slices it into two 2×6 strips with an internal cutter. Early test prints came out with uneven borders because the mechanical cut shaved the inner edge. I adjusted the frame templates and canvas layout so both physical strips exit the printer with clean, balanced borders on all four sides.
+- **Silent Windows print spooling:** Browser web apps cannot talk directly to raw photo printers without popping a print dialog. A background PowerShell bridge (`print-card.ps1`) takes the composite PNG from Next.js and spools it directly to the printer driver's cut queue (`DS-RX1-Strips`) as a calibrated borderless 4×6 job.
+- **Inactivity resets:** If a student walks away halfway through taking a photo or typing their card details, an idle timer resets the kiosk back to the home screen for the next person.
 
 ## Stack & Credits
 
