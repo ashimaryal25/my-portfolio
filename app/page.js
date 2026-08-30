@@ -46,7 +46,7 @@ export default function HomePage() {
 
           <figure className={styles.cardPortrait}>
             <Image
-              src="/ashim-aryal-card.png"
+              src="/ashim-card-v14.png"
               alt="Ashim Aryal trading card made with CardifyBooth"
               width={600}
               height={960}
