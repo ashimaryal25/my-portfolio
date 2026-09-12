@@ -15,9 +15,32 @@ export async function generateMetadata({ params }) {
   const { slug } = await params;
   const project = getProjectBySlug(slug);
   if (!project) return {};
+
+  const title = `${project.frontmatter.title} | ${config.name}`;
+  const description = project.frontmatter.tagline;
+  const url = `https://ashimaryal.com/projects/${slug}`;
+  const image = project.frontmatter.image ? `https://ashimaryal.com${project.frontmatter.image}` : undefined;
+
   return {
-    title: `${project.frontmatter.title} · ${config.name}`,
-    description: project.frontmatter.tagline,
+    title,
+    description,
+    alternates: {
+      canonical: url,
+    },
+    openGraph: {
+      title,
+      description,
+      url,
+      siteName: "Ashim Aryal",
+      type: "article",
+      images: image ? [{ url: image }] : undefined,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: image ? [image] : undefined,
+    },
   };
 }
 
