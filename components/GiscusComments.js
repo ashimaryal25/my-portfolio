@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Giscus from "@giscus/react";
 import styles from "./GiscusComments.module.css";
@@ -22,7 +22,7 @@ export default function GiscusComments() {
           categoryId={process.env.NEXT_PUBLIC_GISCUS_CATEGORY_ID || "DIC_kwDON7uUbs4CnJ2q"}
           mapping="pathname"
           strict="0"
-          reactionsEnabled="1"
+          reactionsEnabled="0"
           emitMetadata="0"
           inputPosition="bottom"
           theme="transparent_dark"
