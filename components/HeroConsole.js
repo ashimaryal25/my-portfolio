@@ -73,7 +73,7 @@ export default function HeroConsole() {
 
   // Plotter Tic-Tac-Toe State
   const [gameBoard, setGameBoard] = useState(Array(9).fill(""));
-  const [plotterState, setPlotterState] = useState("Your turn. Press and drag inside an empty square to draw X.");
+  const [plotterState, setPlotterState] = useState("Your turn. Tap or drag an X inside an empty square.");
   const [plotterCell, setPlotterCell] = useState(null);
   const [drawingOCell, setDrawingOCell] = useState(null);
   const [drawingXCell, setDrawingXCell] = useState(null);
@@ -120,7 +120,7 @@ export default function HeroConsole() {
     setHumanPenPosition({ x: 110, y: 820 });
     setIsGameAnimating(false);
     setHumanInkCell(null);
-    setPlotterState("Your turn. Press and drag inside an empty square to draw X.");
+    setPlotterState("Your turn. Tap or drag an X inside an empty square.");
   };
 
   const handlePlotterMove = (cell, drawnByHuman = false) => {
@@ -150,7 +150,7 @@ export default function HeroConsole() {
 
     const runRobot = () => {
       if (winner(afterHuman).length || afterHuman.every(Boolean)) {
-        setPlotterState(winner(afterHuman).length ? "You won. Reset to play again." : "Draw. Reset to play again.");
+        setPlotterState(winner(afterHuman).length ? "You won! Reset to play again." : "Draw! Reset to play again.");
         setIsGameAnimating(false);
         return;
       }
@@ -158,7 +158,7 @@ export default function HeroConsole() {
       const target = plotterPoint(reply);
       const startPoint = { x: target.x, y: target.y - 34 };
       setPlotterCell(reply);
-      setPlotterState(`Gondola moving to row ${Math.floor(reply / 3) + 1}, column ${(reply % 3) + 1}.`);
+      setPlotterState(`Gondola moving to row ${Math.floor(reply / 3) + 1}, col ${(reply % 3) + 1}.`);
       animate(plotterPoint(null), startPoint, 750, setPlotterPosition, () => {
         setDrawingOCell(reply);
         setPlotterState("Pen down. Drawing O.");
@@ -184,11 +184,11 @@ export default function HeroConsole() {
               setPlotterCell(null);
               const winningLine = winner(afterRobot);
               if (winningLine.length) {
-                setPlotterState("Plotter wins. Reset to play again.");
+                setPlotterState("Plotter wins! Reset to play again.");
               } else if (afterRobot.every(Boolean)) {
-                setPlotterState("Game drawn. Reset to play again.");
+                setPlotterState("Game drawn! Reset to play again.");
               } else {
-                setPlotterState("Your turn. Draw your next X.");
+                setPlotterState("Your turn. Tap or drag your next X.");
               }
               setIsGameAnimating(false);
             });
@@ -227,6 +227,7 @@ export default function HeroConsole() {
   const svgPoint = (event) => {
     const svg = event.currentTarget.ownerSVGElement || event.currentTarget;
     const box = svg.getBoundingClientRect();
+    if (!box.width || !box.height) return { x: 0, y: 0 };
     return {
       x: -40 + ((event.clientX - box.left) / box.width) * 1300,
       y: -55 + ((event.clientY - box.top) / box.height) * 1085,
@@ -235,7 +236,9 @@ export default function HeroConsole() {
 
   const handlePenDown = (event) => {
     if (isGameAnimating || winner(gameBoard).length) return;
-    event.currentTarget.setPointerCapture(event.pointerId);
+    try {
+      event.currentTarget.setPointerCapture(event.pointerId);
+    } catch (_) {}
     const point = svgPoint(event);
     const col = Math.floor((point.x - PLOTTER.boardX) / PLOTTER.cell);
     const row = Math.floor((point.y - PLOTTER.boardY) / PLOTTER.cell);
@@ -245,13 +248,13 @@ export default function HeroConsole() {
     setHumanPenPosition(point);
     setHumanPath([point]);
     setHumanInkCell(cell);
-    setPlotterState("Red marker down. Draw an X.");
+    setPlotterState("Drawing X in square...");
   };
 
   const handlePenMove = (event) => {
+    if (!holdingHumanPen) return;
     const point = svgPoint(event);
     setHumanPenPosition(point);
-    if (!holdingHumanPen) return;
     const col = Math.floor((point.x - PLOTTER.boardX) / PLOTTER.cell);
     const row = Math.floor((point.y - PLOTTER.boardY) / PLOTTER.cell);
     const cell = row * 3 + col;
@@ -262,18 +265,24 @@ export default function HeroConsole() {
 
   const handlePenUp = (event) => {
     if (!holdingHumanPen) return;
-    const point = svgPoint(event);
+    try {
+      if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+        event.currentTarget.releasePointerCapture(event.pointerId);
+      }
+    } catch (_) {}
     setHoldingHumanPen(false);
-    if (humanInkCell !== null && humanPath.length > 6) {
-      setHumanPath([]);
-      setHumanPenPosition({ x: 110, y: 820 });
-      setHumanInkCell(null);
-      handlePlotterMove(humanInkCell, true);
-    } else {
-      setHumanPenPosition({ x: 110, y: 820 });
-      setHumanPath([]);
-      setHumanInkCell(null);
-      setPlotterState("Draw an X inside an empty square.");
+    const targetCell = humanInkCell;
+    const pathLen = humanPath.length;
+    setHumanPath([]);
+    setHumanPenPosition({ x: 110, y: 820 });
+    setHumanInkCell(null);
+
+    if (targetCell !== null) {
+      if (pathLen > 5) {
+        handlePlotterMove(targetCell, true);
+      } else {
+        handlePlotterMove(targetCell, false);
+      }
     }
   };
 
@@ -358,7 +367,7 @@ export default function HeroConsole() {
         {activeTab === "plotter" && (
           <div className={styles.plotterView}>
             <div className={styles.plotterIntro}>
-              <span>Draw an <strong>X</strong> on the virtual wall canvas. The plotter tracks your move and answers with <strong>O</strong>.</span>
+              <span>Tap or draw an <strong>X</strong> on the virtual wall canvas. The plotter tracks your move and answers with <strong>O</strong>.</span>
               <button type="button" onClick={resetPlotterGame} className={styles.resetGameBtn}>Reset board</button>
             </div>
             <div className={styles.plotterWorkspace}>
@@ -375,7 +384,15 @@ export default function HeroConsole() {
                     const x = PLOTTER.boardX + (cell % 3) * PLOTTER.cell;
                     const y = PLOTTER.boardY + Math.floor(cell / 3) * PLOTTER.cell;
                     return (
-                      <g key={cell} className={!mark && !isGameAnimating && !winner(gameBoard).length ? styles.svgCell : ""}>
+                      <g 
+                        key={cell} 
+                        className={!mark && !isGameAnimating && !winner(gameBoard).length ? styles.svgCell : ""}
+                        onClick={() => {
+                          if (!mark && !isGameAnimating && !winner(gameBoard).length && !holdingHumanPen) {
+                            handlePlotterMove(cell, false);
+                          }
+                        }}
+                      >
                         <rect x={x} y={y} width={PLOTTER.cell} height={PLOTTER.cell} fill="transparent" />
                         {mark === "X" && drawingXCell !== cell && <path d={`M ${x + 32} ${y + 32} L ${x + 88} ${y + 88} M ${x + 88} ${y + 32} L ${x + 32} ${y + 88}`} stroke="#a73737" strokeWidth="10" strokeLinecap="round" />}
                         {drawingXCell === cell && <><path className={styles.drawingX} d={`M ${x + 32} ${y + 32} L ${x + 88} ${y + 88}`} stroke="#a73737" strokeWidth="10" strokeLinecap="round" />{drawingXStage === 2 && <path className={styles.drawingX} d={`M ${x + 88} ${y + 32} L ${x + 32} ${y + 88}`} stroke="#a73737" strokeWidth="10" strokeLinecap="round" />}</>}

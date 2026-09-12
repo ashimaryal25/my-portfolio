@@ -384,11 +384,15 @@
 
 .plotterStage {
   position: relative;
-  aspect-ratio: 1.18;
+  aspect-ratio: 1300 / 1085;
   min-height: 0;
-  overflow: auto;
+  width: 100%;
+  overflow: hidden;
   border: 1px solid #232734;
   background: #d8d5ce;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .plotterWorkspace {
@@ -397,8 +401,15 @@
   border: 1px solid #232734;
 }
 
-.plotterSvg { display: block; width: 100%; height: 100%; min-width: 480px; }
-.svgCell { cursor: crosshair; }
+.plotterSvg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.svgCell { cursor: pointer; }
 .svgCell:hover rect { fill: rgba(245, 158, 11, 0.15); }
 .humanPenTool { cursor: grab; }
 .humanPenTool:active { cursor: grabbing; }
