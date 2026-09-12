@@ -3,6 +3,7 @@ import Link from "next/link";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { getPostBySlug, getAllPosts } from "@/lib/posts";
 import config from "@/data/config";
+import GiscusComments from "@/components/GiscusComments";
 import styles from "./page.module.css";
 
 export async function generateStaticParams() {
@@ -85,6 +86,8 @@ export default async function BlogPostPage({ params }) {
           )}
         </div>
       </footer>
+
+      <GiscusComments />
     </article>
   );
 }

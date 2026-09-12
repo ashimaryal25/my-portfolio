@@ -1,0 +1,27 @@
+﻿.container {
+  margin-top: 48px;
+  padding-top: 32px;
+  border-top: 1px solid var(--border);
+}
+
+.header {
+  margin-bottom: 24px;
+}
+
+.title {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #f8fafc;
+  margin-bottom: 6px;
+}
+
+.subtitle {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.giscusWrapper {
+  min-height: 200px;
+  width: 100%;
+}
