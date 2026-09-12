@@ -20,10 +20,16 @@ export async function generateMetadata({ params }) {
   const description = project.frontmatter.tagline;
   const url = `https://ashimaryal.com/projects/${slug}`;
   const image = project.frontmatter.image ? `https://ashimaryal.com${project.frontmatter.image}` : undefined;
+  const keywords = [
+    project.frontmatter.title,
+    ...(project.frontmatter.keywords || []),
+    ...(project.frontmatter.tech || []),
+  ];
 
   return {
     title,
     description,
+    keywords,
     alternates: {
       canonical: url,
     },
@@ -51,8 +57,33 @@ export default async function ProjectPage({ params }) {
 
   const { frontmatter, content } = project;
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareSourceCode",
+    name: frontmatter.title,
+    headline: frontmatter.title,
+    description: frontmatter.tagline,
+    author: {
+      "@type": "Person",
+      name: config.name,
+      url: "https://ashimaryal.com",
+    },
+    codeRepository: frontmatter.github || undefined,
+    programmingLanguage: frontmatter.tech || undefined,
+    keywords: [
+      frontmatter.title,
+      ...(frontmatter.keywords || []),
+      ...(frontmatter.tech || []),
+    ].join(", "),
+    image: frontmatter.image ? `https://ashimaryal.com${frontmatter.image}` : undefined,
+  };
+
   return (
     <article className={`container ${styles.article}`}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <div className={styles.topNav}>
         <Link href="/projects" className={styles.backLink}>
           ← Projects

@@ -15,9 +15,37 @@ export async function generateMetadata({ params }) {
   const { slug } = await params;
   const post = getPostBySlug(slug);
   if (!post) return {};
+
+  const title = `${post.frontmatter.title} | ${config.name}`;
+  const description = post.frontmatter.excerpt;
+  const url = `https://ashimaryal.com/blog/${slug}`;
+  const keywords = [
+    post.frontmatter.title,
+    ...(post.frontmatter.keywords || []),
+    ...(post.frontmatter.tags || []),
+  ];
+
   return {
-    title: `${post.frontmatter.title} · ${config.name}`,
-    description: post.frontmatter.excerpt,
+    title,
+    description,
+    keywords,
+    alternates: {
+      canonical: url,
+    },
+    openGraph: {
+      title,
+      description,
+      url,
+      siteName: "Ashim Aryal",
+      type: "article",
+      publishedTime: post.frontmatter.date,
+      authors: [config.name],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+    },
   };
 }
 
@@ -43,8 +71,30 @@ export default async function BlogPostPage({ params }) {
 
   const { frontmatter, content } = post;
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    headline: frontmatter.title,
+    description: frontmatter.excerpt,
+    datePublished: frontmatter.date,
+    author: {
+      "@type": "Person",
+      name: config.name,
+      url: "https://ashimaryal.com",
+    },
+    keywords: [
+      frontmatter.title,
+      ...(frontmatter.keywords || []),
+      ...(frontmatter.tags || []),
+    ].join(", "),
+  };
+
   return (
     <article className={`container ${styles.article}`}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <div className={styles.topNav}>
         <Link href="/blog" className={styles.backLink}>
           ← Writing
