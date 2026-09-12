@@ -1,4 +1,4 @@
-﻿.wrapper {
+.wrapper {
   display: flex;
   align-items: center;
   gap: 14px;
@@ -24,17 +24,18 @@
   user-select: none;
 }
 
-.likeBtn:hover {
+.likeBtn:hover:not(:disabled) {
   background: var(--surface);
-  border-color: #ef4444;
-  color: #ef4444;
+  border-color: var(--accent-hover);
+  color: var(--accent-hover);
   transform: translateY(-1px);
 }
 
 .liked {
-  background: rgba(239, 68, 68, 0.1);
-  border-color: rgba(239, 68, 68, 0.4);
-  color: #ef4444;
+  background: rgba(215, 162, 54, 0.12);
+  border-color: rgba(215, 162, 54, 0.5);
+  color: #f59e0b;
+  cursor: default;
 }
 
 .icon {
@@ -42,10 +43,10 @@
 }
 
 .iconFilled {
-  color: #ef4444;
+  color: #f59e0b;
 }
 
-.likeBtn:hover .icon {
+.likeBtn:hover:not(:disabled) .icon {
   transform: scale(1.15);
 }
 
