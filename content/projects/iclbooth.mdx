@@ -53,6 +53,11 @@ Getting a browser app to output clean physical prints to a dye-sub photo printer
 - **Silent Windows print spooling:** Browser web apps cannot talk directly to raw photo printers without popping a print dialog. A background PowerShell bridge (`print-card.ps1`) takes the composite PNG from Next.js and spools it directly to the printer driver's cut queue (`DS-RX1-Strips`) as a calibrated borderless 4×6 job.
 - **Inactivity resets:** If a student walks away halfway through taking a photo or typing their card details, an idle timer resets the kiosk back to the home screen for the next person.
 
+## In the wild: Real-world traction
+
+![A corkboard in the lab packed with dozens of physical photo strips and custom AI trading cards created by students](/projects/iclbooth/community-board.jpg)
+*Real-world adoption: a community corkboard in the Innovation & Creativity Lab packed with physical prints and AI trading cards made by campus students and visitors (portraits softly blurred for privacy).*
+
 ## Stack & Credits
 
 Next.js 16 (App Router), React 19, and TypeScript, with Tailwind for styling. OpenAI Responses API with structured JSON output and Zod validation for card identities, SQLite via `better-sqlite3` for metadata, `html-to-image` for card export, HTML Canvas for the collage, and PowerShell for the Windows print path.
